@@ -6,6 +6,12 @@ __pycache__/
 # C extensions
 *.so
 
+
+Blog/config/secret.py
+
+.idea/
+.media/
+
 # Distribution / packaging
 .Python
 build/
