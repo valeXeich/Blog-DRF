@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import models
+from slugify import slugify
 
 User = get_user_model()
 
@@ -18,12 +19,16 @@ class Tag(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super(Tag, self).save(*args, **kwargs)
+
 
 class Post(models.Model):
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
     title = models.CharField('Название', max_length=255)
     content = models.TextField('Текст')
-    poster = models.ImageField('Постер', upload_to='poster/')
+    poster = models.ImageField('Постер', upload_to='poster/', blank=True)
     tags = models.ManyToManyField(Tag, verbose_name='Теги', blank=True)
     update_date = models.DateTimeField('Редактирован', auto_now=True)
     created_date = models.DateTimeField('Создан', auto_now_add=True)
@@ -33,11 +38,17 @@ class Post(models.Model):
     def __str__(self):
         return self.title
 
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        return super(Post, self).save(*args, **kwargs)
 
 class Comment(models.Model):
     author = models.ForeignKey(User, verbose_name='Автор', on_delete=models.CASCADE)
     created_date = models.DateTimeField('Создан', auto_now_add=True)
     content = models.TextField('Текст')
-    post = models.ForeignKey(Post, verbose_name='Пост', on_delete=models.CASCADE)
+    post = models.ForeignKey(Post, verbose_name='Пост', on_delete=models.CASCADE, related_name='comments')
+
+    def __str__(self):
+        return f'Комментарий: {self.author}'
 
 
