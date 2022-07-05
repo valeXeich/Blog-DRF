@@ -9,5 +9,5 @@ Stack
 Functionality
 1. JWT authentication
 2. Create posts and comments
-3. Delete post
+3. Delete post and comments
 4. Search by name and tags
